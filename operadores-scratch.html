@@ -1,0 +1,907 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Operadores en Scratch</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --scratch-orange: #FF8C1A;
+    --scratch-purple: #9966FF;
+    --scratch-dark-purple: #4C2F87;
+    --scratch-blue: #4D97FF;
+    --scratch-green: #5CB100;
+    --scratch-yellow: #FFAB19;
+    --scratch-op-green: #59C059;
+    --bg: #1e1e2e;
+    --bg2: #2a2a3e;
+    --bg3: #323248;
+    --text: #f0f0ff;
+    --text-muted: #a0a0c0;
+    --card-border: rgba(153,102,255,0.25);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Nunito', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    padding: 0 0 60px;
+  }
+
+  header {
+    background: linear-gradient(135deg, var(--scratch-dark-purple) 0%, #1a1a2e 100%);
+    border-bottom: 3px solid var(--scratch-green);
+    padding: 28px 24px 24px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  header::before {
+    content: '';
+    position: absolute;
+    top: -40px; left: -40px;
+    width: 180px; height: 180px;
+    background: radial-gradient(circle, rgba(89,192,89,0.1) 0%, transparent 70%);
+    border-radius: 50%;
+  }
+  header::after {
+    content: '';
+    position: absolute;
+    bottom: -40px; right: -40px;
+    width: 200px; height: 200px;
+    background: radial-gradient(circle, rgba(153,102,255,0.1) 0%, transparent 70%);
+    border-radius: 50%;
+  }
+  .header-icon { font-size: 48px; display: block; margin-bottom: 10px; filter: drop-shadow(0 0 12px rgba(89,192,89,0.5)); }
+  h1 { font-size: 28px; font-weight: 800; color: #fff; letter-spacing: -0.5px; margin-bottom: 6px; }
+  .subtitle { font-size: 14px; color: var(--text-muted); font-weight: 600; }
+
+  nav {
+    display: flex; gap: 8px; justify-content: center;
+    padding: 20px 16px 0; flex-wrap: wrap;
+  }
+  .nav-pill {
+    background: var(--bg2);
+    border: 1.5px solid var(--card-border);
+    border-radius: 20px;
+    padding: 7px 16px;
+    font-size: 13px; font-weight: 700;
+    color: var(--text-muted);
+    cursor: pointer; transition: all 0.2s; text-decoration: none;
+  }
+  .nav-pill:hover, .nav-pill.active {
+    background: var(--scratch-purple);
+    border-color: var(--scratch-purple);
+    color: #fff;
+  }
+
+  section { display: none; max-width: 760px; margin: 24px auto 0; padding: 0 16px; }
+  section.active { display: block; }
+
+  .card {
+    background: var(--bg2);
+    border: 1.5px solid var(--card-border);
+    border-radius: 16px;
+    padding: 24px;
+    margin-bottom: 18px;
+  }
+  .card-title {
+    font-size: 16px; font-weight: 800;
+    color: var(--scratch-orange);
+    margin-bottom: 14px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .card-title .emoji { font-size: 20px; }
+  p { font-size: 15px; line-height: 1.7; color: var(--text); margin-bottom: 10px; }
+  p:last-child { margin-bottom: 0; }
+
+  .tip {
+    background: rgba(255,171,25,0.08);
+    border: 1.5px solid rgba(255,171,25,0.3);
+    border-radius: 12px;
+    padding: 14px 18px;
+    font-size: 14px;
+    display: flex; align-items: flex-start; gap: 10px;
+    margin-top: 12px;
+  }
+  .tip-icon { font-size: 20px; flex-shrink: 0; }
+
+  /* BLOQUES SCRATCH */
+  .scratch-block {
+    display: inline-flex; align-items: center; gap: 5px;
+    background: var(--scratch-op-green);
+    border-radius: 28px;
+    border-bottom: 4px solid #3d8c3d;
+    padding: 7px 14px;
+    font-family: 'Nunito', sans-serif;
+    font-weight: 800; font-size: 15px; color: #fff;
+    margin: 4px 0;
+    user-select: none;
+    position: relative;
+  }
+  .scratch-block::before, .scratch-block::after {
+    content: '';
+    position: absolute;
+    width: 12px; height: 100%;
+    top: 0;
+    background: var(--scratch-op-green);
+    border-radius: 28px;
+  }
+  .scratch-block::before { left: -6px; clip-path: ellipse(8px 50% at 100% 50%); }
+  .scratch-block::after  { right: -6px; clip-path: ellipse(8px 50% at 0% 50%); }
+  .block-slot {
+    background: rgba(0,0,0,0.25);
+    border-radius: 20px;
+    padding: 3px 10px;
+    font-size: 14px;
+    min-width: 36px;
+    text-align: center;
+  }
+  .block-bool {
+    background: #FF6680;
+    border-bottom-color: #cc3355;
+    clip-path: polygon(12px 0%, calc(100% - 12px) 0%, 100% 50%, calc(100% - 12px) 100%, 12px 100%, 0% 50%);
+    border-radius: 0;
+    border-bottom: none;
+    padding: 7px 22px;
+  }
+  .block-bool::before, .block-bool::after { display: none; }
+
+  /* TABLA OPERADORES */
+  .op-table { display: flex; flex-direction: column; gap: 12px; margin-top: 14px; }
+  .op-row {
+    background: var(--bg3);
+    border-radius: 12px;
+    padding: 14px 16px;
+    display: flex; align-items: center; gap: 16px;
+    cursor: pointer;
+    border: 1.5px solid transparent;
+    transition: all 0.2s;
+  }
+  .op-row:hover { border-color: var(--scratch-op-green); }
+  .op-row.expanded { border-color: var(--scratch-op-green); background: rgba(89,192,89,0.07); }
+  .op-symbol {
+    font-size: 22px; font-weight: 800;
+    color: var(--scratch-op-green);
+    min-width: 32px; text-align: center;
+  }
+  .op-name { font-size: 15px; font-weight: 700; flex: 1; }
+  .op-chevron { color: var(--text-muted); font-size: 18px; transition: transform 0.2s; }
+  .op-row.expanded .op-chevron { transform: rotate(90deg); }
+  .op-detail {
+    display: none;
+    background: rgba(89,192,89,0.05);
+    border-radius: 0 0 12px 12px;
+    padding: 14px 16px;
+    font-size: 14px;
+    line-height: 1.7;
+    border: 1.5px solid var(--scratch-op-green);
+    border-top: none;
+    margin-top: -12px;
+    color: var(--text-muted);
+  }
+  .op-detail.open { display: block; }
+
+  /* CALCULADORA */
+  .calc-wrap {
+    background: var(--bg3);
+    border-radius: 14px;
+    padding: 20px;
+    margin-top: 14px;
+  }
+  .calc-row { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 14px; }
+  .calc-input {
+    width: 80px;
+    background: var(--bg);
+    border: 1.5px solid var(--card-border);
+    border-radius: 10px;
+    color: var(--text);
+    font-family: 'Nunito', sans-serif;
+    font-weight: 700; font-size: 18px;
+    padding: 8px 12px; text-align: center;
+  }
+  .calc-input:focus { outline: none; border-color: var(--scratch-op-green); }
+  .op-selector {
+    display: flex; gap: 8px; flex-wrap: wrap;
+  }
+  .op-btn {
+    background: var(--bg);
+    border: 1.5px solid var(--card-border);
+    border-radius: 10px;
+    color: var(--text-muted);
+    font-family: 'Nunito', sans-serif;
+    font-weight: 800; font-size: 18px;
+    padding: 8px 16px;
+    cursor: pointer; transition: all 0.2s;
+  }
+  .op-btn:hover { border-color: var(--scratch-op-green); color: var(--scratch-op-green); }
+  .op-btn.active { background: var(--scratch-op-green); border-color: var(--scratch-op-green); color: #fff; }
+  .calc-result {
+    background: var(--bg);
+    border-radius: 12px;
+    padding: 16px 20px;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .result-block {
+    display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+  }
+  .result-num {
+    font-size: 28px; font-weight: 800;
+    color: var(--scratch-op-green);
+    min-width: 60px;
+  }
+  .result-label { font-size: 13px; color: var(--text-muted); font-weight: 600; }
+
+  /* DADOS */
+  .dice-wrap { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; margin-top: 14px; }
+  .dice-btn {
+    background: var(--scratch-purple);
+    border: none; border-radius: 12px;
+    color: #fff; font-family: 'Nunito', sans-serif;
+    font-weight: 800; font-size: 14px;
+    padding: 12px 24px; cursor: pointer;
+    transition: all 0.2s;
+  }
+  .dice-btn:hover { background: var(--scratch-dark-purple); transform: translateY(-1px); }
+  .dice-btn:active { transform: scale(0.97); }
+  .dice-display {
+    font-size: 48px;
+    animation: none;
+    display: inline-block;
+  }
+  .dice-display.rolling { animation: roll 0.5s ease; }
+  @keyframes roll { 0%{transform:rotate(0deg) scale(1)} 25%{transform:rotate(-15deg) scale(1.1)} 75%{transform:rotate(15deg) scale(1.1)} 100%{transform:rotate(0deg) scale(1)} }
+  .dice-val { font-size: 32px; font-weight: 800; color: var(--scratch-yellow); }
+
+  /* BOOLEANOS */
+  .bool-intro {
+    display: flex; gap: 12px; flex-wrap: wrap; margin: 14px 0;
+  }
+  .bool-badge {
+    padding: 8px 16px; border-radius: 10px;
+    font-size: 14px; font-weight: 800;
+  }
+  .bool-v { background: rgba(91,177,0,0.2); border: 1.5px solid rgba(91,177,0,0.5); color: #8cd455; }
+  .bool-f { background: rgba(255,100,100,0.2); border: 1.5px solid rgba(255,100,100,0.5); color: #ff8080; }
+
+  .truth-table { width: 100%; border-collapse: collapse; margin-top: 14px; font-size: 14px; }
+  .truth-table th {
+    background: rgba(153,102,255,0.2);
+    padding: 10px 14px; text-align: center;
+    font-weight: 800; color: var(--scratch-purple);
+    border-bottom: 1.5px solid var(--card-border);
+  }
+  .truth-table td {
+    padding: 10px 14px; text-align: center;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+    font-weight: 700;
+  }
+  .truth-table tr:last-child td { border-bottom: none; }
+  .t-v { color: #8cd455; }
+  .t-f { color: #ff8080; }
+
+  /* SIMULADOR BOOLEANO */
+  .bool-sim {
+    background: var(--bg3); border-radius: 14px;
+    padding: 20px; margin-top: 14px;
+  }
+  .bool-toggle-row { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; flex-wrap: wrap; }
+  .bool-toggle {
+    display: flex; align-items: center; gap: 8px;
+    font-size: 15px; font-weight: 700;
+  }
+  .vf-btn {
+    padding: 8px 18px; border-radius: 10px;
+    font-family: 'Nunito', sans-serif;
+    font-weight: 800; font-size: 14px;
+    border: 1.5px solid;
+    cursor: pointer; transition: all 0.2s;
+  }
+  .vf-btn.verdadero {
+    background: rgba(91,177,0,0.15);
+    border-color: rgba(91,177,0,0.5);
+    color: #8cd455;
+  }
+  .vf-btn.verdadero.selected {
+    background: var(--scratch-green);
+    border-color: var(--scratch-green);
+    color: #fff;
+  }
+  .vf-btn.falso {
+    background: rgba(255,100,100,0.15);
+    border-color: rgba(255,100,100,0.5);
+    color: #ff8080;
+  }
+  .vf-btn.falso.selected {
+    background: #cc3333;
+    border-color: #cc3333;
+    color: #fff;
+  }
+  .op-logic-selector { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 16px; }
+  .op-logic-btn {
+    background: var(--bg);
+    border: 1.5px solid var(--card-border);
+    border-radius: 10px;
+    color: var(--text-muted);
+    font-family: 'Nunito', sans-serif;
+    font-weight: 800; font-size: 14px;
+    padding: 8px 18px; cursor: pointer; transition: all 0.2s;
+  }
+  .op-logic-btn:hover { border-color: var(--scratch-purple); color: var(--scratch-purple); }
+  .op-logic-btn.active { background: var(--scratch-purple); border-color: var(--scratch-purple); color: #fff; }
+  .bool-result-wrap {
+    background: var(--bg);
+    border-radius: 12px;
+    padding: 16px 20px;
+    display: flex; align-items: center; gap: 16px; flex-wrap: wrap;
+  }
+  .bool-result-big {
+    font-size: 24px; font-weight: 800;
+    padding: 10px 24px; border-radius: 10px;
+    transition: all 0.3s;
+  }
+  .bool-result-big.v { background: rgba(91,177,0,0.2); color: #8cd455; border: 1.5px solid rgba(91,177,0,0.5); }
+  .bool-result-big.f { background: rgba(255,100,100,0.2); color: #ff8080; border: 1.5px solid rgba(255,100,100,0.5); }
+  .bool-explain { font-size: 13px; color: var(--text-muted); font-weight: 600; flex: 1; }
+
+  /* COMPARADORES */
+  .comp-sim {
+    background: var(--bg3); border-radius: 14px;
+    padding: 20px; margin-top: 14px;
+  }
+  .comp-row { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 14px; }
+  .comp-selector { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 14px; }
+  .comp-btn {
+    background: var(--bg);
+    border: 1.5px solid var(--card-border);
+    border-radius: 10px;
+    color: var(--text-muted);
+    font-family: 'Nunito', sans-serif;
+    font-weight: 800; font-size: 16px;
+    padding: 8px 18px; cursor: pointer; transition: all 0.2s;
+  }
+  .comp-btn:hover { border-color: #FF6680; color: #FF6680; }
+  .comp-btn.active { background: #FF6680; border-color: #FF6680; color: #fff; }
+</style>
+</head>
+<body>
+
+<header>
+  <span class="header-icon">🧮</span>
+  <h1>Operadores en Scratch</h1>
+  <p class="subtitle">Matemáticos, lógicos y de comparación</p>
+</header>
+
+<nav>
+  <a class="nav-pill active" onclick="showSection('intro')">📖 Intro</a>
+  <a class="nav-pill" onclick="showSection('mat')">➕ Matemáticos</a>
+  <a class="nav-pill" onclick="showSection('calc')">🧮 Calculadora</a>
+  <a class="nav-pill" onclick="showSection('bool')">💡 Booleanos</a>
+  <a class="nav-pill" onclick="showSection('comp')">⚖️ Comparadores</a>
+  <a class="nav-pill" onclick="showSection('sim')">🎮 Simulador</a>
+</nav>
+
+<!-- ======================== INTRO ======================== -->
+<section id="intro" class="active">
+  <div class="card">
+    <div class="card-title"><span class="emoji">📖</span> ¿Qué son los operadores?</div>
+    <p>Scratch puede hacer todas las operaciones matemáticas que conocés. Sin embargo, algunos símbolos que usa son diferentes a los del cuaderno, para adaptarse al teclado.</p>
+    <p>También podés usar variables en las operaciones, y Scratch puede incluso lanzar "dados" para generar números aleatorios.</p>
+    <div class="tip"><span class="tip-icon">🟢</span> Los bloques de operadores en Scratch son de color <strong>verde</strong> y tienen forma ovalada o hexagonal.</div>
+  </div>
+
+  <div class="card">
+    <div class="card-title"><span class="emoji">📦</span> Tipos de operadores</div>
+    <div style="display:flex; flex-direction:column; gap:10px; margin-top:8px;">
+      <div style="background:var(--bg3); border-radius:12px; padding:14px 16px; border-left: 3px solid var(--scratch-op-green);">
+        <div style="font-weight:800; font-size:15px; margin-bottom:4px;">➕ Matemáticos</div>
+        <div style="font-size:13px; color:var(--text-muted);">Suma, resta, multiplicación, división, módulo, redondear, número aleatorio</div>
+      </div>
+      <div style="background:var(--bg3); border-radius:12px; padding:14px 16px; border-left: 3px solid var(--scratch-purple);">
+        <div style="font-weight:800; font-size:15px; margin-bottom:4px;">💡 Lógicos / Booleanos</div>
+        <div style="font-size:13px; color:var(--text-muted);">Y, O, NO — devuelven VERDADERO o FALSO</div>
+      </div>
+      <div style="background:var(--bg3); border-radius:12px; padding:14px 16px; border-left: 3px solid #FF6680;">
+        <div style="font-weight:800; font-size:15px; margin-bottom:4px;">⚖️ Comparadores</div>
+        <div style="font-size:13px; color:var(--text-muted);">Menor que, mayor que, igual a</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ======================== MATEMÁTICOS ======================== -->
+<section id="mat">
+  <div class="card">
+    <div class="card-title"><span class="emoji">➕</span> Operadores matemáticos</div>
+    <p>Hacé clic en cada operador para ver más detalles.</p>
+
+    <div class="op-table">
+
+      <div>
+        <div class="op-row" onclick="toggleOp(this)">
+          <span class="op-symbol">+</span>
+          <span class="op-name">Suma</span>
+          <div style="margin-left:auto">
+            <span class="scratch-block" style="font-size:13px; padding:5px 12px">
+              <span class="block-slot">5</span> + <span class="block-slot">3</span>
+            </span>
+          </div>
+          <span class="op-chevron">›</span>
+        </div>
+        <div class="op-detail">Suma dos valores e informa del resultado. Podés poner números directamente o usar variables.<br><br>Ejemplo: <strong>5 + 3 = 8</strong></div>
+      </div>
+
+      <div>
+        <div class="op-row" onclick="toggleOp(this)">
+          <span class="op-symbol">−</span>
+          <span class="op-name">Resta</span>
+          <div style="margin-left:auto">
+            <span class="scratch-block" style="font-size:13px; padding:5px 12px">
+              <span class="block-slot">10</span> − <span class="block-slot">4</span>
+            </span>
+          </div>
+          <span class="op-chevron">›</span>
+        </div>
+        <div class="op-detail">Resta el segundo valor al primero. Podés apilar bloques dentro de sí mismos para restar más números.<br><br>Ejemplo: <strong>10 − 4 = 6</strong></div>
+      </div>
+
+      <div>
+        <div class="op-row" onclick="toggleOp(this)">
+          <span class="op-symbol">×</span>
+          <span class="op-name">Multiplicación</span>
+          <div style="margin-left:auto">
+            <span class="scratch-block" style="font-size:13px; padding:5px 12px">
+              <span class="block-slot">6</span> * <span class="block-slot">7</span>
+            </span>
+          </div>
+          <span class="op-chevron">›</span>
+        </div>
+        <div class="op-detail">Multiplica dos valores. En Scratch se usa el asterisco <strong>*</strong> en lugar del × del cuaderno.<br><br>Ejemplo: <strong>6 × 7 = 42</strong></div>
+      </div>
+
+      <div>
+        <div class="op-row" onclick="toggleOp(this)">
+          <span class="op-symbol">÷</span>
+          <span class="op-name">División</span>
+          <div style="margin-left:auto">
+            <span class="scratch-block" style="font-size:13px; padding:5px 12px">
+              <span class="block-slot">20</span> / <span class="block-slot">4</span>
+            </span>
+          </div>
+          <span class="op-chevron">›</span>
+        </div>
+        <div class="op-detail">Divide el primer valor entre el segundo. Si no es divisible exactamente, el resultado tendrá decimales. Dividir por 0 devuelve infinito.<br><br>Ejemplo: <strong>20 / 4 = 5</strong>, pero <strong>10 / 3 = 3.333...</strong></div>
+      </div>
+
+      <div>
+        <div class="op-row" onclick="toggleOp(this)">
+          <span class="op-symbol">%</span>
+          <span class="op-name">Módulo (resto)</span>
+          <div style="margin-left:auto">
+            <span class="scratch-block" style="font-size:13px; padding:5px 12px">
+              <span class="block-slot">10</span> módulo <span class="block-slot">3</span>
+            </span>
+          </div>
+          <span class="op-chevron">›</span>
+        </div>
+        <div class="op-detail">Devuelve el <strong>resto</strong> de una división. Muy útil para saber si un número es par o impar (número módulo 2).<br><br>Ejemplo: <strong>10 módulo 3 = 1</strong> (porque 10 = 3×3 + 1)</div>
+      </div>
+
+      <div>
+        <div class="op-row" onclick="toggleOp(this)">
+          <span class="op-symbol">🎲</span>
+          <span class="op-name">Número aleatorio</span>
+          <div style="margin-left:auto">
+            <span class="scratch-block" style="font-size:13px; padding:5px 12px">
+              aleatorio entre <span class="block-slot">1</span> y <span class="block-slot">10</span>
+            </span>
+          </div>
+          <span class="op-chevron">›</span>
+        </div>
+        <div class="op-detail">Devuelve un número al azar entre los dos valores dados, incluyendo ambos extremos. Si ambos son enteros, el resultado también es entero.<br><br>Muy útil para juegos: simular dados, posiciones aleatorias, personajes que se mueven solos.</div>
+      </div>
+
+      <div>
+        <div class="op-row" onclick="toggleOp(this)">
+          <span class="op-symbol">≈</span>
+          <span class="op-name">Redondear</span>
+          <div style="margin-left:auto">
+            <span class="scratch-block" style="font-size:13px; padding:5px 12px">
+              redondear <span class="block-slot">3.7</span>
+            </span>
+          </div>
+          <span class="op-chevron">›</span>
+        </div>
+        <div class="op-detail">Redondea al entero más cercano. Si el decimal es 0.5 o más, sube; si es menos de 0.5, baja.<br><br>Ejemplos: <strong>3.7 → 4</strong>, <strong>3.2 → 3</strong>, <strong>3.5 → 4</strong></div>
+      </div>
+
+      <div>
+        <div class="op-row" onclick="toggleOp(this)">
+          <span class="op-symbol">🔗</span>
+          <span class="op-name">Unir (texto)</span>
+          <div style="margin-left:auto">
+            <span class="scratch-block" style="font-size:13px; padding:5px 12px">
+              unir <span class="block-slot">hola</span> <span class="block-slot">mundo</span>
+            </span>
+          </div>
+          <span class="op-chevron">›</span>
+        </div>
+        <div class="op-detail">Concatena (une) dos textos. Por ejemplo, "hola" + " " + "mundo" = "hola mundo".<br><br>Para unir tres o más valores, arrastrá copias del bloque dentro de sí mismo.</div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ======================== CALCULADORA ======================== -->
+<section id="calc">
+  <div class="card">
+    <div class="card-title"><span class="emoji">🧮</span> Calculadora interactiva</div>
+    <p>Probá los operadores matemáticos como si fuera un bloque de Scratch.</p>
+
+    <div class="calc-wrap">
+      <div class="calc-row">
+        <input class="calc-input" type="number" id="num1" value="10" oninput="calcular()">
+        <div class="op-selector">
+          <button class="op-btn active" onclick="setOp(this,'+')" data-op="+">+</button>
+          <button class="op-btn" onclick="setOp(this,'-')" data-op="−">−</button>
+          <button class="op-btn" onclick="setOp(this,'*')" data-op="×">×</button>
+          <button class="op-btn" onclick="setOp(this,'/')" data-op="÷">÷</button>
+          <button class="op-btn" onclick="setOp(this,'%')" data-op="%">%</button>
+        </div>
+        <input class="calc-input" type="number" id="num2" value="3" oninput="calcular()">
+      </div>
+
+      <div class="calc-result">
+        <div class="result-block">
+          <span class="scratch-block" id="calc-block" style="font-size:14px; padding:6px 14px">
+            <span id="cb-n1">10</span> + <span id="cb-n2">3</span>
+          </span>
+          <span style="font-size:20px; color:var(--text-muted)">=</span>
+          <span class="result-num" id="calc-res">13</span>
+        </div>
+        <div id="calc-explain" style="font-size:12px; color:var(--text-muted); text-align:right; max-width:160px"></div>
+      </div>
+    </div>
+
+    <div class="tip" style="margin-top:14px"><span class="tip-icon">🎲</span> <strong>Simulador de dados</strong> — lanzá el dado y Scratch elige un número al azar entre 1 y 6.</div>
+
+    <div class="dice-wrap" style="margin-top:14px">
+      <button class="dice-btn" onclick="lanzarDado()">🎲 Lanzar dado</button>
+      <span class="dice-display" id="dice-emoji">⬜</span>
+      <span class="dice-val" id="dice-val"></span>
+    </div>
+    <div style="margin-top:10px">
+      <label style="font-size:13px; color:var(--text-muted); font-weight:700">Rango personalizado:</label>
+      <div style="display:flex; align-items:center; gap:8px; margin-top:6px; flex-wrap:wrap">
+        <input class="calc-input" type="number" id="rand-min" value="1" style="width:60px">
+        <span style="color:var(--text-muted); font-weight:700">hasta</span>
+        <input class="calc-input" type="number" id="rand-max" value="10" style="width:60px">
+        <button class="dice-btn" style="padding:8px 16px; font-size:13px" onclick="lanzarRango()">Generar</button>
+        <span class="dice-val" id="rand-val" style="font-size:22px"></span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ======================== BOOLEANOS ======================== -->
+<section id="bool">
+  <div class="card">
+    <div class="card-title"><span class="emoji">💡</span> Operadores booleanos</div>
+    <p>Los operadores lógicos solo pueden tener dos resultados posibles:</p>
+    <div class="bool-intro">
+      <span class="bool-badge bool-v">✅ VERDADERO</span>
+      <span class="bool-badge bool-f">❌ FALSO</span>
+    </div>
+    <p>La palabra "booleano" viene del álgebra de Boole. Se usan para <strong>tomar decisiones</strong> en los programas — por ejemplo, si un personaje toca una pared, si el puntaje es suficiente, etc.</p>
+  </div>
+
+  <div class="card">
+    <div class="card-title"><span class="emoji">🔵</span> Operador Y (AND)</div>
+    <p>Para que el resultado sea VERDADERO, <strong>ambas condiciones</strong> deben ser verdaderas.</p>
+    <table class="truth-table">
+      <tr><th>A</th><th>B</th><th>A Y B</th></tr>
+      <tr><td class="t-f">F</td><td class="t-f">F</td><td class="t-f">F</td></tr>
+      <tr><td class="t-f">F</td><td class="t-v">V</td><td class="t-f">F</td></tr>
+      <tr><td class="t-v">V</td><td class="t-f">F</td><td class="t-f">F</td></tr>
+      <tr><td class="t-v">V</td><td class="t-v">V</td><td class="t-v">V</td></tr>
+    </table>
+    <div class="tip" style="margin-top:12px"><span class="tip-icon">💬</span> Ejemplo: <em>"Si A=5 Y B>7 entonces..."</em> — las dos condiciones deben cumplirse.</div>
+  </div>
+
+  <div class="card">
+    <div class="card-title"><span class="emoji">🟡</span> Operador O (OR)</div>
+    <p>Para que el resultado sea VERDADERO, <strong>al menos una</strong> condición debe ser verdadera.</p>
+    <table class="truth-table">
+      <tr><th>A</th><th>B</th><th>A O B</th></tr>
+      <tr><td class="t-f">F</td><td class="t-f">F</td><td class="t-f">F</td></tr>
+      <tr><td class="t-f">F</td><td class="t-v">V</td><td class="t-v">V</td></tr>
+      <tr><td class="t-v">V</td><td class="t-f">F</td><td class="t-v">V</td></tr>
+      <tr><td class="t-v">V</td><td class="t-v">V</td><td class="t-v">V</td></tr>
+    </table>
+    <div class="tip" style="margin-top:12px"><span class="tip-icon">💬</span> Ejemplo: <em>"Si A=5 O B&lt;8 entonces..."</em> — basta con que una de las dos se cumpla.</div>
+  </div>
+
+  <div class="card">
+    <div class="card-title"><span class="emoji">🔴</span> Operador NO (NOT)</div>
+    <p>Invierte el valor booleano: si era verdadero lo hace falso, y viceversa.</p>
+    <table class="truth-table">
+      <tr><th>A</th><th>NO A</th></tr>
+      <tr><td class="t-f">F</td><td class="t-v">V</td></tr>
+      <tr><td class="t-v">V</td><td class="t-f">F</td></tr>
+    </table>
+    <div class="tip" style="margin-top:12px"><span class="tip-icon">💬</span> Ejemplo: <em>"Si NO(A=7) entonces..."</em> — se cumple cuando A es cualquier cosa menos 7.</div>
+  </div>
+</section>
+
+<!-- ======================== COMPARADORES ======================== -->
+<section id="comp">
+  <div class="card">
+    <div class="card-title"><span class="emoji">⚖️</span> Bloques de comparación</div>
+    <p>Estos bloques comparan dos valores y devuelven VERDADERO o FALSO. Tienen forma hexagonal (como un diamante alargado).</p>
+
+    <div class="op-table" style="margin-top:14px">
+      <div>
+        <div class="op-row" onclick="toggleOp(this)">
+          <span class="op-symbol" style="color:#FF6680">&lt;</span>
+          <span class="op-name">Menor que</span>
+          <div style="margin-left:auto">
+            <span class="scratch-block block-bool" style="font-size:13px; padding:5px 18px; background:#FF6680; border-radius:0; clip-path:polygon(10px 0%,calc(100% - 10px) 0%,100% 50%,calc(100% - 10px) 100%,10px 100%,0% 50%)">
+              &nbsp; &lt; 50 &nbsp;
+            </span>
+          </div>
+          <span class="op-chevron">›</span>
+        </div>
+        <div class="op-detail">Devuelve <span class="t-v">VERDADERO</span> si el primer valor es menor que el segundo.<br><br>Ejemplo: <strong>3 &lt; 10</strong> → VERDADERO &nbsp;|&nbsp; <strong>15 &lt; 10</strong> → FALSO</div>
+      </div>
+
+      <div>
+        <div class="op-row" onclick="toggleOp(this)">
+          <span class="op-symbol" style="color:#FF6680">&gt;</span>
+          <span class="op-name">Mayor que</span>
+          <div style="margin-left:auto">
+            <span class="scratch-block block-bool" style="font-size:13px; padding:5px 18px; background:#FF6680; border-radius:0; clip-path:polygon(10px 0%,calc(100% - 10px) 0%,100% 50%,calc(100% - 10px) 100%,10px 100%,0% 50%)">
+              &nbsp; &gt; 50 &nbsp;
+            </span>
+          </div>
+          <span class="op-chevron">›</span>
+        </div>
+        <div class="op-detail">Devuelve <span class="t-v">VERDADERO</span> si el primer valor es mayor que el segundo.<br><br>Ejemplo: <strong>15 &gt; 10</strong> → VERDADERO &nbsp;|&nbsp; <strong>3 &gt; 10</strong> → FALSO</div>
+      </div>
+
+      <div>
+        <div class="op-row" onclick="toggleOp(this)">
+          <span class="op-symbol" style="color:#FF6680">=</span>
+          <span class="op-name">Igual a</span>
+          <div style="margin-left:auto">
+            <span class="scratch-block block-bool" style="font-size:13px; padding:5px 18px; background:#FF6680; border-radius:0; clip-path:polygon(10px 0%,calc(100% - 10px) 0%,100% 50%,calc(100% - 10px) 100%,10px 100%,0% 50%)">
+              &nbsp; = 50 &nbsp;
+            </span>
+          </div>
+          <span class="op-chevron">›</span>
+        </div>
+        <div class="op-detail">Devuelve <span class="t-v">VERDADERO</span> si ambos valores son iguales. No distingue entre mayúsculas y minúsculas.<br><br>Ejemplo: <strong>10 = 10</strong> → VERDADERO &nbsp;|&nbsp; <strong>"Hola" = "hola"</strong> → VERDADERO</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title"><span class="emoji">🔢</span> Probá los comparadores</div>
+    <div class="comp-sim">
+      <div class="comp-row">
+        <input class="calc-input" type="number" id="c1" value="5" oninput="comparar()">
+        <div class="comp-selector">
+          <button class="comp-btn active" onclick="setComp(this,'<')">&lt;</button>
+          <button class="comp-btn" onclick="setComp(this,'>')">&gt;</button>
+          <button class="comp-btn" onclick="setComp(this,'=')"> = </button>
+        </div>
+        <input class="calc-input" type="number" id="c2" value="10" oninput="comparar()">
+      </div>
+      <div class="bool-result-wrap">
+        <div class="bool-result-big f" id="comp-result">FALSO</div>
+        <div class="bool-explain" id="comp-explain">5 no es menor que 10... esperá, ¡sí lo es!</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ======================== SIMULADOR ======================== -->
+<section id="sim">
+  <div class="card">
+    <div class="card-title"><span class="emoji">🎮</span> Simulador de operadores lógicos</div>
+    <p>Elegí un operador lógico, poné VERDADERO o FALSO en cada entrada y mirá el resultado.</p>
+
+    <div class="bool-sim">
+      <div class="op-logic-selector">
+        <button class="op-logic-btn active" onclick="setLogicOp(this,'Y')">Y (AND)</button>
+        <button class="op-logic-btn" onclick="setLogicOp(this,'O')">O (OR)</button>
+        <button class="op-logic-btn" onclick="setLogicOp(this,'NO')">NO (NOT)</button>
+      </div>
+
+      <div class="bool-toggle-row" id="sim-inputs">
+        <div class="bool-toggle">
+          <span style="color:var(--text-muted); font-size:14px">A:</span>
+          <button class="vf-btn verdadero selected" id="btnA-v" onclick="setVal('A',true)">V</button>
+          <button class="vf-btn falso" id="btnA-f" onclick="setVal('A',false)">F</button>
+        </div>
+        <div class="bool-toggle" id="b-toggle">
+          <span style="color:var(--text-muted); font-size:14px">B:</span>
+          <button class="vf-btn verdadero selected" id="btnB-v" onclick="setVal('B',true)">V</button>
+          <button class="vf-btn falso" id="btnB-f" onclick="setVal('B',false)">F</button>
+        </div>
+      </div>
+
+      <div class="bool-result-wrap">
+        <div class="bool-result-big v" id="sim-result">VERDADERO</div>
+        <div class="bool-explain" id="sim-explain">V Y V = VERDADERO porque ambas condiciones son verdaderas.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title"><span class="emoji">🧩</span> ¿Cómo se usan en un juego?</div>
+    <p>Los operadores lógicos permiten crear condiciones complejas en Scratch:</p>
+    <div style="display:flex; flex-direction:column; gap:10px; margin-top:12px">
+      <div style="background:var(--bg3); border-radius:12px; padding:14px 16px; font-size:14px; border-left:3px solid var(--scratch-op-green)">
+        <div style="font-weight:800; margin-bottom:4px;">Con Y:</div>
+        <div style="color:var(--text-muted)">"Si el personaje toca el borde <strong>Y</strong> la vida es mayor que 0, entonces perder vida"</div>
+      </div>
+      <div style="background:var(--bg3); border-radius:12px; padding:14px 16px; font-size:14px; border-left:3px solid var(--scratch-yellow)">
+        <div style="font-weight:800; margin-bottom:4px;">Con O:</div>
+        <div style="color:var(--text-muted)">"Si tocás la llave <strong>O</strong> el puntaje es mayor a 100, entonces abrir puerta"</div>
+      </div>
+      <div style="background:var(--bg3); border-radius:12px; padding:14px 16px; font-size:14px; border-left:3px solid #FF6680">
+        <div style="font-weight:800; margin-bottom:4px;">Con NO:</div>
+        <div style="color:var(--text-muted)">"Si <strong>NO</strong> está presionada la tecla espacio, entonces el personaje cae"</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+/* ---- NAV ---- */
+function showSection(id) {
+  document.querySelectorAll('section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.nav-pill').forEach(p => p.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  const map = {intro:0, mat:1, calc:2, bool:3, comp:4, sim:5};
+  const pills = document.querySelectorAll('.nav-pill');
+  if (map[id] !== undefined) pills[map[id]].classList.add('active');
+}
+
+/* ---- OPERADORES EXPAND ---- */
+function toggleOp(row) {
+  const detail = row.nextElementSibling;
+  const wasOpen = row.classList.contains('expanded');
+  document.querySelectorAll('.op-row').forEach(r => r.classList.remove('expanded'));
+  document.querySelectorAll('.op-detail').forEach(d => d.classList.remove('open'));
+  if (!wasOpen) {
+    row.classList.add('expanded');
+    detail.classList.add('open');
+  }
+}
+
+/* ---- CALCULADORA ---- */
+let currentOp = '+';
+let opSymbols = {'+':'+', '-':'−', '*':'×', '/':'÷', '%':'módulo'};
+
+function setOp(btn, op) {
+  document.querySelectorAll('.op-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  currentOp = op;
+  calcular();
+}
+
+function calcular() {
+  const n1 = parseFloat(document.getElementById('num1').value) || 0;
+  const n2 = parseFloat(document.getElementById('num2').value) || 0;
+  let res, explain = '';
+  switch(currentOp) {
+    case '+': res = n1 + n2; break;
+    case '-': res = n1 - n2; break;
+    case '*': res = n1 * n2; break;
+    case '/':
+      if (n2 === 0) { res = '∞'; explain = 'No se puede dividir por 0'; }
+      else { res = Math.round(n1/n2 * 1000)/1000; }
+      break;
+    case '%': res = n1 % n2; explain = `${n1} = ${Math.floor(n1/n2)}×${n2} + ${res}`; break;
+  }
+  document.getElementById('calc-res').textContent = res;
+  document.getElementById('cb-n1').textContent = n1;
+  document.getElementById('cb-n2').textContent = n2;
+  document.getElementById('calc-block').querySelector('span:nth-child(2)').textContent = ' ' + opSymbols[currentOp] + ' ';
+  document.getElementById('calc-explain').textContent = explain;
+}
+
+/* ---- DADOS ---- */
+const diceEmojis = ['⚀','⚁','⚂','⚃','⚄','⚅'];
+function lanzarDado() {
+  const val = Math.floor(Math.random() * 6) + 1;
+  const el = document.getElementById('dice-emoji');
+  el.classList.remove('rolling');
+  void el.offsetWidth;
+  el.classList.add('rolling');
+  el.textContent = diceEmojis[val-1];
+  document.getElementById('dice-val').textContent = '= ' + val;
+}
+function lanzarRango() {
+  const min = parseInt(document.getElementById('rand-min').value) || 1;
+  const max = parseInt(document.getElementById('rand-max').value) || 10;
+  const val = Math.floor(Math.random() * (max - min + 1)) + min;
+  document.getElementById('rand-val').textContent = val;
+}
+
+/* ---- COMPARADORES ---- */
+let currentComp = '<';
+function setComp(btn, op) {
+  document.querySelectorAll('.comp-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  currentComp = op;
+  comparar();
+}
+function comparar() {
+  const c1 = parseFloat(document.getElementById('c1').value) || 0;
+  const c2 = parseFloat(document.getElementById('c2').value) || 0;
+  let res;
+  if (currentComp === '<') res = c1 < c2;
+  else if (currentComp === '>') res = c1 > c2;
+  else res = c1 === c2;
+  const el = document.getElementById('comp-result');
+  const ex = document.getElementById('comp-explain');
+  el.textContent = res ? 'VERDADERO' : 'FALSO';
+  el.className = 'bool-result-big ' + (res ? 'v' : 'f');
+  const sym = currentComp === '=' ? '=' : currentComp;
+  ex.textContent = `${c1} ${sym} ${c2} es ${res ? 'verdadero' : 'falso'}.`;
+}
+
+/* ---- SIMULADOR LÓGICO ---- */
+let logicOp = 'Y';
+let valA = true, valB = true;
+
+function setLogicOp(btn, op) {
+  document.querySelectorAll('.op-logic-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  logicOp = op;
+  const bToggle = document.getElementById('b-toggle');
+  bToggle.style.display = op === 'NO' ? 'none' : 'flex';
+  evalLogic();
+}
+function setVal(v, val) {
+  if (v === 'A') {
+    valA = val;
+    document.getElementById('btnA-v').classList.toggle('selected', val);
+    document.getElementById('btnA-f').classList.toggle('selected', !val);
+  } else {
+    valB = val;
+    document.getElementById('btnB-v').classList.toggle('selected', val);
+    document.getElementById('btnB-f').classList.toggle('selected', !val);
+  }
+  evalLogic();
+}
+function evalLogic() {
+  let res, explain;
+  const a = valA ? 'V' : 'F';
+  const b = valB ? 'V' : 'F';
+  if (logicOp === 'Y') {
+    res = valA && valB;
+    explain = `${a} Y ${b} = ${res ? 'VERDADERO' : 'FALSO'} — ${res ? 'ambas condiciones son verdaderas.' : 'al menos una es falsa.'}`;
+  } else if (logicOp === 'O') {
+    res = valA || valB;
+    explain = `${a} O ${b} = ${res ? 'VERDADERO' : 'FALSO'} — ${res ? 'al menos una condición es verdadera.' : 'ninguna condición es verdadera.'}`;
+  } else {
+    res = !valA;
+    explain = `NO ${a} = ${res ? 'VERDADERO' : 'FALSO'} — invierte el valor de ${a}.`;
+  }
+  const el = document.getElementById('sim-result');
+  el.textContent = res ? 'VERDADERO' : 'FALSO';
+  el.className = 'bool-result-big ' + (res ? 'v' : 'f');
+  document.getElementById('sim-explain').textContent = explain;
+}
+
+calcular();
+comparar();
+</script>
+</body>
+</html>
